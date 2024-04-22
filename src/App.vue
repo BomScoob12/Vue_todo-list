@@ -1,32 +1,35 @@
 <script setup lang="ts">
-// import HelloWorld from './components/HelloWorld.vue'
+import { ref, watchEffect } from 'vue';
+import TodoManagement from './utils/TodoManagement';
+import Todo from './interfaces/Todo';
+import FormTodo from './components/FormTodo.vue';
 
-const msg = 'Hello Vite + Vue 3!'
+const todoManagement = new TodoManagement();
+
+const todos = ref(new Array<Todo>());
+
+todos.value = todoManagement.getTodos();
+
+const getLocalDateTime = () => {
+  const date = new Date();
+  return date.toLocaleString();
+};
+
+const updateTodos = () => {
+  todos.value = todoManagement.getTodos();
+};
+
+(() => {
+  console.log('Effect triggered');
+});
 </script>
 
 <template>
   <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <p>Local date and time: {{ getLocalDateTime() }}</p>
+    <FormTodo :todoManager="todoManagement" />
+    <div @addTodoEvent="updateTodos">
+      {{ todos }}
+    </div>
   </div>
-
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
